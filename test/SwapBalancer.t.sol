@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
 import {Test} from "forge-std/Test.sol";
@@ -8,18 +8,22 @@ import {IAsset} from "@ibalancer/vault/IAsset.sol";
 import {console} from "forge-std/console.sol";
 
 /*//////////////////////////////////////////////////////////////
-                          POOL WBTC/USDC/WETH
+                          POOL rETH/WETH
 //////////////////////////////////////////////////////////////*/
-// POOLID:  0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002
-// ADDRESS: 0x64541216bAFFFEec8ea535BB71Fbc927831d0595
-// WETH ADDRESS: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
-// USDC ADDRESS: 0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8
+// POOL ID:  0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112
+// POOL ADDRESS: 0x1E19CF2D73a72Ef1332C882F20534B6519Be0276
+// wETH ADDRESS: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+// rETH ADDRESS: 0xae78736Cd615f374D3085123A210448E74Fc6393
 
 contract SwapBalancer is Test {
     uint256 forkId =
-        vm.createSelectFork(vm.envString("ARBITRUM_RPC_URL"), 64271681);
+        vm.createSelectFork(vm.envString("MAINNET_RPC_URL"), 16721325);
+
+    IAsset weth = IAsset(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+    IAsset reth = IAsset(0xae78736Cd615f374D3085123A210448E74Fc6393);
+
     IVault balancerVault = IVault(0xBA12222222228d8Ba445958a75a0704d566BF2C8);
-    address wethWhale = 0xc2707568D31F3fB1Fc55B2F8b2ae5682eAa72041;
+    address wethWhale = 0x4b7fEcEffE3b14fFD522e72b711B087f08BD98Ab;
 
     function setUp() public {
         vm.label(wethWhale, "Whale");
@@ -30,11 +34,11 @@ contract SwapBalancer is Test {
         balancerVault.WETH().approve(address(balancerVault), 1 ether);
         IVault.SingleSwap memory singleSwap = IVault.SingleSwap({
             kind: IVault.SwapKind.GIVEN_IN,
-            poolId: 0x64541216bafffeec8ea535bb71fbc927831d0595000100000000000000000002,
-            // WETH
-            assetIn: IAsset(0x82aF49447D8a07e3bd95BD0d56f35241523fBab1),
-            // USDC
-            assetOut: IAsset(0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8),
+            poolId: 0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112,
+            // wETH
+            assetIn: weth,
+            // rETH
+            assetOut: reth,
             amount: 1 ether,
             userData: ""
         });
